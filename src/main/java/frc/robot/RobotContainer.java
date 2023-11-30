@@ -13,14 +13,16 @@ import static frc.robot.Constants.ControllerConstants.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.CannonSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.PivotSubsystem;
 
 public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(kDriverControllerID);
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
   private final CannonSubsystem m_CannonSubsystem = new CannonSubsystem();
+  private final PivotSubsystem m_PivotSubsystem = new PivotSubsystem();
 
   public RobotContainer() {
-    m_driveSubsystem.setDefaultCommand(new StartEndCommand(() -> System.out.println("Driving start"), () -> System.out.println("Driving end"), m_driveSubsystem));
+    m_driveSubsystem.setDefaultCommand(m_driveSubsystem.driveTeleopCommand(() -> m_driverController.getLeftX(), () -> -m_driverController.getLeftY(), () -> m_driverController.getRightX()));
 
     configureBindings();
   }

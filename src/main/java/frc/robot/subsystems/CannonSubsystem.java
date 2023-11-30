@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -47,7 +48,7 @@ public class CannonSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+        
     }
 
     private Command activateSolenoidTimedCommand(TalonSRX motorController, double duration) {
@@ -59,22 +60,26 @@ public class CannonSubsystem extends SubsystemBase {
     public Command loadLeftTankTimedCommand(double duration) {
         return activateSolenoidTimedCommand(leftPrimerSolenoidSRX, duration)
                 .unless(() -> {return leftCannonState == CannonState.kPrimed;})
-                .finallyDo((interrupted) -> {leftCannonState = CannonState.kPrimed;});
+                .finallyDo((interrupted) -> {leftCannonState = CannonState.kPrimed;})
+                .withName("Load Left Tank");
     }
 
     public Command loadRightTankTimedCommand(double duration) {
         return activateSolenoidTimedCommand(rightPrimerSolenoidSRX, duration)
                 .unless(() -> {return rightCannonState == CannonState.kPrimed;})
-                .finallyDo((interrupted) -> {rightCannonState = CannonState.kPrimed;});
+                .finallyDo((interrupted) -> {rightCannonState = CannonState.kPrimed;})
+                .withName("Load Right Tank");
     }
 
     public Command shootLeftCannonCommand() {
         return activateSolenoidTimedCommand(leftShooterSolenoidSRX, 0.5)
-                .finallyDo((interrupted) -> {leftCannonState = CannonState.kEmpty;});
+                .finallyDo((interrupted) -> {leftCannonState = CannonState.kEmpty;})
+                .withName("Shoot Left Cannon");
     }
 
     public Command shootRightCannonCommand() {
         return activateSolenoidTimedCommand(rightShooterSolenoidSRX, 0.5)
-                .finallyDo((interrupted) -> {rightCannonState = CannonState.kEmpty;});
+                .finallyDo((interrupted) -> {rightCannonState = CannonState.kEmpty;})
+                .withName("Shoot Right Cannon");
     }
 }
