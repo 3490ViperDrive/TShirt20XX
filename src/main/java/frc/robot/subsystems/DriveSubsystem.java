@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ControllerConstants;
@@ -44,11 +45,19 @@ public class DriveSubsystem extends SubsystemBase {
         configureMotorController(backRightSparkMax);
 
         //+x is forwards
+        //TODO determine if/why using proper distances causes strafing issues (it may just be the weight of the robot)
+        /*
         mecanumKinematics = new MecanumDriveKinematics(
             new Translation2d(kWheelbase/2, kTrackWidth/2),
             new Translation2d(kWheelbase/2, -kTrackWidth/2),
             new Translation2d(-kWheelbase/2, kTrackWidth/2),
-            new Translation2d(-kWheelbase/2, -kTrackWidth/2));
+            new Translation2d(-kWheelbase/2, -kTrackWidth/2)); */
+
+        mecanumKinematics = new MecanumDriveKinematics(
+            new Translation2d(kTrackWidth/2, kTrackWidth/2),
+            new Translation2d(kTrackWidth/2, -kTrackWidth/2),
+            new Translation2d(-kTrackWidth/2, kTrackWidth/2),
+            new Translation2d(-kTrackWidth/2, -kTrackWidth/2));
     }
 
     void configureMotorController(CANSparkMax motorController) {
@@ -71,7 +80,10 @@ public class DriveSubsystem extends SubsystemBase {
         //Convert to polar coordinates and saturate
         Translation2d xy = new Translation2d(xSpeed, ySpeed);
         //Convert to polar coordinates, apply filters, return
-        return new Translation2d(filterAxis(Math.min(1, xy.getNorm())), 0).rotateBy(xy.getAngle());
+        Translation2d xy2 = new Translation2d(filterAxis(Math.min(1, xy.getNorm())), 0).rotateBy(xy.getAngle());
+        SmartDashboard.putNumber("Left Stick X Filtered", xy2.getX());
+        SmartDashboard.putNumber("Left Stick Y Filtered", xy2.getY());
+        return xy2;
     }
 
     double filterAxis(double value) {
@@ -87,11 +99,17 @@ public class DriveSubsystem extends SubsystemBase {
         //Make ChassisSpeeds obj
         //Convert to WheelSpeeds
         MecanumDriveWheelSpeeds wheelSpeeds = mecanumKinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, ySpeed, zRot));
+        wheelSpeeds.desaturate(1);
         //Command motor controllers
         frontLeftSparkMax.set(wheelSpeeds.frontLeftMetersPerSecond);
         frontRightSparkMax.set(wheelSpeeds.frontRightMetersPerSecond);
         backLeftSparkMax.set(wheelSpeeds.rearLeftMetersPerSecond);
         backRightSparkMax.set(wheelSpeeds.rearRightMetersPerSecond);
+
+        SmartDashboard.putNumber("front left wheel", wheelSpeeds.frontLeftMetersPerSecond);
+        SmartDashboard.putNumber("front Right wheel", wheelSpeeds.frontRightMetersPerSecond);
+        SmartDashboard.putNumber("rear left wheel", wheelSpeeds.rearLeftMetersPerSecond);
+        SmartDashboard.putNumber("rear Right wheel", wheelSpeeds.rearRightMetersPerSecond);
     }
 
     void stopMotors() {

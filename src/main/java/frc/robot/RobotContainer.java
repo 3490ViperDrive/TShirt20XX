@@ -6,8 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 import static frc.robot.Constants.ControllerConstants.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -22,25 +20,25 @@ public class RobotContainer {
   private final PivotSubsystem m_PivotSubsystem = new PivotSubsystem();
 
   public RobotContainer() {
-    m_driveSubsystem.setDefaultCommand(m_driveSubsystem.driveTeleopCommand(() -> m_driverController.getLeftX(), () -> -m_driverController.getLeftY(), () -> m_driverController.getRightX()));
+    m_driveSubsystem.setDefaultCommand(m_driveSubsystem.driveTeleopCommand(() -> m_driverController.getLeftY(), () -> m_driverController.getLeftX(), () -> m_driverController.getRightX()));
 
     configureBindings();
   }
 
   private void configureBindings() {
-    m_driverController.a().and(m_driverController.leftBumper()).onTrue(new PrintCommand("Load left barrel low"));
-    m_driverController.b().and(m_driverController.leftBumper()).onTrue(new PrintCommand("Load left barrel mid"));
-    m_driverController.y().and(m_driverController.leftBumper()).onTrue(new PrintCommand("Load left barrel high"));
+    m_driverController.a().and(m_driverController.leftBumper()).onTrue(m_CannonSubsystem.loadLeftTankTimedCommand(0.2)); //Load left barrel low
+    m_driverController.b().and(m_driverController.leftBumper()).onTrue(m_CannonSubsystem.loadLeftTankTimedCommand(0.6)); //Load left barrel mid
+    m_driverController.y().and(m_driverController.leftBumper()).onTrue(m_CannonSubsystem.loadLeftTankTimedCommand(1.4)); //Load left barrel high
 
-    m_driverController.a().and(m_driverController.rightBumper()).onTrue(new PrintCommand("Load right barrel low"));
-    m_driverController.b().and(m_driverController.rightBumper()).onTrue(new PrintCommand("Load right barrel mid"));
-    m_driverController.y().and(m_driverController.rightBumper()).onTrue(new PrintCommand("Load right barrel high"));
+    m_driverController.a().and(m_driverController.rightBumper()).onTrue(m_CannonSubsystem.loadRightTankTimedCommand(0.2)); //Load right barrel low
+    m_driverController.b().and(m_driverController.rightBumper()).onTrue(m_CannonSubsystem.loadRightTankTimedCommand(0.6)); //Load right barrel mid
+    m_driverController.y().and(m_driverController.rightBumper()).onTrue(m_CannonSubsystem.loadRightTankTimedCommand(1.4)); //Load right barrel high
 
-    m_driverController.leftTrigger().onTrue(new PrintCommand("Shoot left"));
-    m_driverController.rightTrigger().onTrue(new PrintCommand("Shoot right"));
+    m_driverController.leftTrigger().onTrue(m_CannonSubsystem.shootLeftCannonCommand());
+    m_driverController.rightTrigger().onTrue(m_CannonSubsystem.shootRightCannonCommand());
 
-    m_driverController.povUp().whileTrue(new PrintCommand("Raise shooter pivot"));
-    m_driverController.povDown().whileTrue(new PrintCommand("Lower shooter pivot"));
+    m_driverController.povUp().whileTrue(m_PivotSubsystem.pivotCommand(0.5));
+    m_driverController.povDown().whileTrue(m_PivotSubsystem.pivotCommand(-0.5));
 
   }
 

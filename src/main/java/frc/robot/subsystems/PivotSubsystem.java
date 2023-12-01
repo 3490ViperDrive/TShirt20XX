@@ -15,7 +15,7 @@ public class PivotSubsystem extends SubsystemBase {
         motorController = new TalonSRX(kMotorControllerID);
         motorController.configPeakCurrentLimit(kPeakCurrentLimit);
         motorController.configContinuousCurrentLimit(kContinuousCurrentLimit);
-        motorController.setInverted(false);
+        motorController.setInverted(true);
     }
 
     @Override
@@ -24,18 +24,12 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     //[0, 1]
-    public Command pivotUpCommand(double speed) {
+    public Command pivotCommand(double speed) {
         return new StartEndCommand(() -> motorController.set(ControlMode.PercentOutput, mapToPercentOutput(speed)), () -> motorController.set(ControlMode.PercentOutput, 0), this)
-        .withName("Pivot Up");
-    }
-
-    //[0, 1]
-    public Command pivotDownCommand(double speed) {
-        return new StartEndCommand(() -> motorController.set(ControlMode.PercentOutput, -mapToPercentOutput(speed)), () -> motorController.set(ControlMode.PercentOutput, 0), this)
-        .withName("Pivot Down");
+        .withName("Pivot Move");
     }
 
     private double mapToPercentOutput(double value) {
-        return Math.max(0, Math.min(1, Math.abs(value)));
+        return Math.max(0, Math.min(1, Math.abs(value))) * Math.signum(value);
     }
 }
