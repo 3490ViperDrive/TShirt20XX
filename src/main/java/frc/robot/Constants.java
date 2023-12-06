@@ -37,8 +37,16 @@ public final class Constants {
     }
 
     public static final class PivotConstants {
-        public static final int kMotorControllerID = 10;
+        public static final int kMotorControllerID = 10; //CAN
+        public static final int kLowerLimitSwitchID = 2; //DIO
         public static final int kPeakCurrentLimit = 40; //these are safe numbers, modify if necessary
         public static final int kContinuousCurrentLimit = 35;
+    }
+
+    public static class VisionConstants {
+        public static final double kCrosshairHeight = 0.8; //double cw = PreferencesHelper.grabDouble("Crosshair Width (0, 1]", kCrosshairWidth);
+        public static final double kCrosshairWidth = 0.44; //double ch = PreferencesHelper.grabDouble("Crosshair Height (0, 1]", kCrosshairHeight);
+        public static final int kResolutionWidth = 256;
+        public static final int kResolutionHeight = 144;
     }
 }

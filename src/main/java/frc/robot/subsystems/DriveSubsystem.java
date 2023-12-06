@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.MecanumDriveKinematics;
 import edu.wpi.first.math.kinematics.MecanumDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -34,6 +35,14 @@ public class DriveSubsystem extends SubsystemBase {
         backLeftSparkMax = new CANSparkMax(kBackLeftMotorControllerID, MotorType.kBrushless);
         backRightSparkMax = new CANSparkMax(kBackRightMotorControllerID, MotorType.kBrushless);
 
+        mecanumKinematics = new MecanumDriveKinematics(
+            new Translation2d(kTrackWidth/2, kTrackWidth/2),
+            new Translation2d(kTrackWidth/2, -kTrackWidth/2),
+            new Translation2d(-kTrackWidth/2, kTrackWidth/2),
+            new Translation2d(-kTrackWidth/2, -kTrackWidth/2));
+
+        Timer.delay(1); //Delay motor config for a second to give the CANbus some time
+
         frontLeftSparkMax.setInverted(false);
         backLeftSparkMax.setInverted(false);
         frontRightSparkMax.setInverted(true);
@@ -52,12 +61,6 @@ public class DriveSubsystem extends SubsystemBase {
             new Translation2d(kWheelbase/2, -kTrackWidth/2),
             new Translation2d(-kWheelbase/2, kTrackWidth/2),
             new Translation2d(-kWheelbase/2, -kTrackWidth/2)); */
-
-        mecanumKinematics = new MecanumDriveKinematics(
-            new Translation2d(kTrackWidth/2, kTrackWidth/2),
-            new Translation2d(kTrackWidth/2, -kTrackWidth/2),
-            new Translation2d(-kTrackWidth/2, kTrackWidth/2),
-            new Translation2d(-kTrackWidth/2, -kTrackWidth/2));
     }
 
     void configureMotorController(CANSparkMax motorController) {

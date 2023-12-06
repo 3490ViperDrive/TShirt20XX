@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.CannonConstants.*;
 
 public class CannonSubsystem extends SubsystemBase {
-    //TODO decide whether to make pivot its own subsystem or part of CannonSubsystem
-
     final TalonSRX leftShooterSolenoidSRX;
     final TalonSRX rightShooterSolenoidSRX;
     final TalonSRX leftPrimerSolenoidSRX;

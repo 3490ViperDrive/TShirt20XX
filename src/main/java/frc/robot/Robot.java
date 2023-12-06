@@ -4,11 +4,22 @@
 
 package frc.robot;
 
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.CvSink;
+import edu.wpi.first.cscore.CvSource;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+
+import static frc.robot.Constants.VisionConstants.*;
 
 //do not touch unless you know what you're doing
 public class Robot extends TimedRobot {
@@ -16,11 +27,41 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
+  private Thread visionThread; 
+
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
     SmartDashboard.putData(CommandScheduler.getInstance());
     DriverStation.silenceJoystickConnectionWarning(true);
+
+    visionThread =
+    new Thread(
+        () -> {
+          UsbCamera camera = CameraServer.startAutomaticCapture();
+          camera.setResolution(kResolutionWidth, kResolutionHeight);
+          /*
+          CvSink cvSink = CameraServer.getVideo();
+          CvSource outputStream = CameraServer.putVideo("Rectangle", kResolutionWidth, kResolutionHeight);
+
+          Mat mat = new Mat();
+
+          Point upperLeftCorner = new Point(kResolutionWidth - (kResolutionWidth * (kCrosshairWidth/2 + 0.5)), kResolutionHeight - (kResolutionHeight * (kCrosshairHeight/2 + 0.5)));
+          Point lowerRightCorner = new Point(kResolutionWidth * (kCrosshairWidth/2 + 0.5), kResolutionHeight * (kCrosshairHeight/2 + 0.5));
+
+          //Thread.interrupted() allows for the thread to stop when code redeploys/resets
+          while (!Thread.interrupted()) {
+            if (cvSink.grabFrame(mat) == 0) {
+              outputStream.notifyError(cvSink.getError());
+              continue;
+            }
+            Imgproc.rectangle(mat, upperLeftCorner, lowerRightCorner, new Scalar(0, 0, 0), 7);
+            Imgproc.rectangle(mat, upperLeftCorner, lowerRightCorner, new Scalar(70, 255, 70), 4);
+            outputStream.putFrame(mat);
+          } */
+        });
+    visionThread.setDaemon(true);
+    visionThread.start();
   }
 
   @Override
