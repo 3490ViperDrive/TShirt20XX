@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RepeatCommand;
 
 import static frc.robot.Constants.ControllerConstants.*;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -13,6 +14,7 @@ import frc.robot.subsystems.CannonSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.DriveTrainSubsystem;
 import frc.robot.subsystems.PivotSubsystem;
+
 
 public class RobotContainer {
   private final CommandXboxController m_driverController = new CommandXboxController(kDriverControllerID);
@@ -22,10 +24,14 @@ public class RobotContainer {
   private final DriveTrainSubsystem m_driveTrainSubsystem = new DriveTrainSubsystem();
   //TODO: create instance of "DriveTrainSubsystem"
 
-  public RobotContainer() {
 
+
+  public RobotContainer() {
+    m_driveTrainSubsystem.setDefaultCommand(m_driveTrainSubsystem.run(()->{
+      m_driveTrainSubsystem.moveBot(m_driverController.getLeftY(), m_driverController.getLeftX(), m_driverController.getRightX());
+    }));
     //TODO: set default command of "DriveTrainSubsystem" instance
-    DriveTrainSubsystem.setDefaultCommand();
+   // DriveTrainSubsystem.setDefaultCommand();
     configureBindings();
   }
 
