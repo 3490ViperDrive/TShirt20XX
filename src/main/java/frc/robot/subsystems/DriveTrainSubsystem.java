@@ -11,10 +11,10 @@ public class DriveTrainSubsystem extends SubsystemBase{
     //public static Object set;
     
     //4 cansparkmaxes
-    private CANSparkMax frontRightMotor = new CANSparkMax(1, null);
-    private CANSparkMax frontLeftMotor = new CANSparkMax(2, null);
-    private CANSparkMax rearRightMotor = new CANSparkMax(3, null);
-    private CANSparkMax rearLeftMotor = new CANSparkMax(4, null);
+    private CANSparkMax frontRightMotor = new CANSparkMax(4, null);
+    private CANSparkMax frontLeftMotor = new CANSparkMax(3, null);
+    private CANSparkMax rearRightMotor = new CANSparkMax(2, null);
+    private CANSparkMax rearLeftMotor = new CANSparkMax(9, null);
 
     // <type> <name> = new <type>()
     MecanumDrive xDrive = new MecanumDrive(frontRightMotor,  frontLeftMotor,  rearRightMotor,  rearLeftMotor);	
